@@ -16,6 +16,8 @@
     --shade:#f2f0ec;
     --rule:rgba(13,12,11,.16);
     --ease:cubic-bezier(.22,.61,.36,1);
+    --pill-bg:#0a0908;
+    --pill-fg:#ffffff;
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -85,7 +87,17 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:26px clamp(20px,3.4vw,44px);
+    gap:12px;
+    padding:
+      max(14px, calc(env(safe-area-inset-top, 0px) + 12px))
+      clamp(16px, 3.4vw, 44px)
+      14px;
+    background:linear-gradient(
+      to bottom,
+      rgba(242,240,236,.94) 0%,
+      rgba(242,240,236,.78) 72%,
+      rgba(242,240,236,0) 100%
+    );
   }
 
   .mark{
@@ -94,22 +106,28 @@
     gap:9px;
     font-size:15px;
     letter-spacing:-.012em;
+    color:var(--fg);
+    min-width:0;
+    flex-shrink:1;
   }
+
+  .mark-star{ opacity:.85; }
 
   .nav{
     display:flex;
     align-items:center;
-    gap:clamp(18px,2.4vw,32px);
+    gap:clamp(14px, 2.4vw, 32px);
+    flex-shrink:0;
   }
-  .nav a{
+  .nav a:not(.pill){
     color:var(--fg);
     text-decoration:none;
     font-size:14.5px;
     letter-spacing:-.008em;
-    opacity:.72;
+    opacity:.88;
     transition:opacity .3s var(--ease);
   }
-  .nav a:hover{ opacity:1; }
+  .nav a:not(.pill):hover{ opacity:1; }
 
   .pill{
     display:inline-flex;
@@ -118,16 +136,34 @@
     height:40px;
     padding:0 21px;
     border-radius:999px;
-    background:var(--fg);
-    color:#f6f4f0;
+    background:var(--pill-bg);
+    color:var(--pill-fg);
     font-size:14.5px;
+    font-weight:500;
     letter-spacing:-.008em;
     text-decoration:none;
     white-space:nowrap;
     opacity:1;
-    transition:transform .4s var(--ease), background .3s var(--ease);
+    border:1px solid rgba(10,9,8,.12);
+    box-shadow:0 1px 0 rgba(255,255,255,.10) inset;
+    -webkit-text-fill-color:var(--pill-fg);
+    transition:transform .4s var(--ease), background .3s var(--ease), color .3s var(--ease);
   }
-  .pill:hover{ transform:translateY(-2px); background:#000; }
+  .nav .pill{
+    color:#fff;
+    -webkit-text-fill-color:#fff;
+  }
+  .pill:hover,
+  .pill:focus-visible{
+    transform:translateY(-2px);
+    background:#000;
+    color:#fff;
+    -webkit-text-fill-color:#fff;
+  }
+  .pill:focus-visible{
+    outline:2px solid var(--fg);
+    outline-offset:2px;
+  }
 
   .foot{
     position:fixed;
@@ -135,11 +171,22 @@
     z-index:40;
     display:flex;
     justify-content:center;
-    padding:22px;
+    padding:
+      14px
+      clamp(16px, 4vw, 24px)
+      max(16px, calc(env(safe-area-inset-bottom, 0px) + 12px));
     font-size:12px;
+    line-height:1.45;
     letter-spacing:.02em;
     color:var(--fg-faint);
+    text-align:center;
     pointer-events:none;
+    background:linear-gradient(
+      to top,
+      rgba(242,240,236,.92) 0%,
+      rgba(242,240,236,.72) 72%,
+      rgba(242,240,236,0) 100%
+    );
   }
 
   /* scroll progress hairline */
@@ -172,7 +219,10 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding:118px clamp(22px,5vw,60px);
+    padding:
+      max(104px, calc(env(safe-area-inset-top, 0px) + 88px))
+      clamp(20px, 5vw, 60px)
+      max(96px, calc(env(safe-area-inset-bottom, 0px) + 80px));
     opacity:0;
     will-change:opacity,transform;
   }
@@ -180,19 +230,24 @@
   .eyebrow{
     display:flex;
     align-items:center;
-    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:6px 12px;
     font-size:12.5px;
     letter-spacing:.045em;
     color:var(--fg-soft);
     margin-bottom:clamp(16px,2vw,22px);
+    max-width:min(46ch, 100%);
+    text-align:center;
   }
 
   h1{
     font-weight:400;
-    font-size:clamp(40px,7.1vw,104px);
+    font-size:clamp(34px, 7.1vw, 104px);
     line-height:.98;
     letter-spacing:-.036em;
     max-width:15ch;
+    text-wrap:balance;
   }
 
   .sub{
@@ -201,14 +256,23 @@
     line-height:1.5;
     letter-spacing:-.008em;
     color:var(--fg-soft);
-    max-width:46ch;
+    max-width:min(46ch, 100%);
+    text-wrap:pretty;
   }
 
   .cta{
     margin-top:clamp(28px,3.4vw,44px);
     pointer-events:auto;
+    width:100%;
+    display:flex;
+    justify-content:center;
   }
-  .cta .pill{ height:48px; padding:0 27px; font-size:15px; }
+  .cta .pill{
+    height:48px;
+    padding:0 27px;
+    font-size:15px;
+    max-width:min(100%, 320px);
+  }
 
   /* ---------- preloader ---------- */
 
@@ -231,12 +295,96 @@
 
   /* ---------- scroll track ---------- */
 
-  .track{ position:relative; z-index:1; height:560vh; }
+  .track{ position:relative; z-index:1; height:560vh; min-height:3200px; }
+
+  @media (max-width:900px){
+    .veil{
+      background:
+        linear-gradient(to bottom, rgba(242,240,236,.72) 0%, rgba(242,240,236,.18) 24%, rgba(242,240,236,.18) 76%, rgba(242,240,236,.74) 100%),
+        radial-gradient(100% 80% at 50% 48%, rgba(242,240,236,0) 0%, rgba(242,240,236,.40) 100%),
+        rgba(242,240,236,.24);
+    }
+  }
 
   @media (max-width:720px){
     .nav a:not(.pill){ display:none; }
-    h1{ max-width:12ch; }
-    .chrome{ padding:18px; }
+
+    .mark{ font-size:14px; }
+
+    .nav .pill{
+      height:38px;
+      padding:0 16px;
+      font-size:13.5px;
+    }
+
+    h1{
+      max-width:12ch;
+      font-size:clamp(30px, 9.8vw, 52px);
+    }
+
+    .sub{
+      font-size:15px;
+      max-width:34ch;
+    }
+
+    .panel{
+      padding:
+        max(92px, calc(env(safe-area-inset-top, 0px) + 76px))
+        18px
+        max(88px, calc(env(safe-area-inset-bottom, 0px) + 72px));
+    }
+
+    .foot{
+      font-size:11px;
+      max-width:34ch;
+    }
+  }
+
+  @media (max-width:420px){
+    .mark-star{ display:none; }
+
+    .nav .pill{
+      height:36px;
+      padding:0 14px;
+      font-size:13px;
+    }
+
+    h1{
+      max-width:11ch;
+      font-size:clamp(28px, 10.5vw, 40px);
+    }
+
+    .eyebrow{
+      font-size:11px;
+      letter-spacing:.04em;
+      max-width:28ch;
+    }
+
+    .cta .pill{
+      width:100%;
+      max-width:280px;
+      height:44px;
+      padding:0 20px;
+      font-size:14px;
+    }
+  }
+
+  @media (max-height:520px) and (orientation:landscape){
+    .panel{
+      padding:
+        max(72px, calc(env(safe-area-inset-top, 0px) + 56px))
+        24px
+        max(64px, calc(env(safe-area-inset-bottom, 0px) + 48px));
+    }
+
+    h1{ font-size:clamp(28px, 8vh, 44px); }
+
+    .sub{
+      margin-top:12px;
+      font-size:14px;
+    }
+
+    .cta{ margin-top:16px; }
   }
 </style>
 </head>
@@ -256,7 +404,7 @@
   <i class="meter" id="meter"></i>
 
   <header class="chrome">
-    <div class="mark">&#10037;&nbsp;Cast &amp; Render</div>
+    <div class="mark"><span class="mark-star" aria-hidden="true">&#10037;</span>&nbsp;Cast &amp; Render</div>
     <nav class="nav">
       <a href="#board">Works</a>
       <a href="#visit">About</a>
